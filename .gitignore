@@ -1,2 +1,5 @@
 *.vsidx
 *.vs
+*.dll
+lib/
+include/
