@@ -3,3 +3,10 @@
 *.dll
 lib/
 include/
+.exe
+.pdb
+.obj
+.idb
+.tlog
+.ilk
+.recipe
