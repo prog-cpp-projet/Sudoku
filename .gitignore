@@ -3,6 +3,8 @@
 *.dll
 lib/
 include/
+Sudoku\x64\Debug/
+x64\Debug/
 .exe
 .pdb
 .obj
@@ -10,3 +12,6 @@ include/
 .tlog
 .ilk
 .recipe
+.filters
+.vcxproj
+.user
