@@ -1,0 +1,7 @@
+﻿  main.cpp
+C:\Users\karlt\source\repos\Sudoku\SudokuGame.h(48,20): warning C4244: 'initialisation' : conversion de 'T' en 'float', perte possible de données
+C:\Users\karlt\source\repos\Sudoku\SudokuGame.h(48,20): warning C4244:         with
+C:\Users\karlt\source\repos\Sudoku\SudokuGame.h(48,20): warning C4244:         [
+C:\Users\karlt\source\repos\Sudoku\SudokuGame.h(48,20): warning C4244:             T=unsigned int
+C:\Users\karlt\source\repos\Sudoku\SudokuGame.h(48,20): warning C4244:         ]
+  Sudoku.vcxproj -> C:\Users\karlt\source\repos\Sudoku\x64\Debug\Sudoku.exe
