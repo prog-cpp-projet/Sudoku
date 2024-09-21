@@ -1,12 +1,14 @@
 #pragma once
 #include "SudokuMap.h"
 
+//HERE THE GAME LOGICAL IS MANAGED
+
 class SudokuGame {
 
 private:
 	SudokuMap map;
-	sf::Vector2<int> focus;
-    sf::Text finish;
+	sf::Vector2<int> focus;//it shows the position of MAGENTA cell (the cell we want to modify)
+    sf::Text finish;// The text displayed when the game is finish
     bool Gamefinish = false;
 public:
 
@@ -14,6 +16,7 @@ public:
 		map.LoadMap(window);
 	}
 
+    //this function check if the input is valid and modify the cell
 	bool check_validity(std::string carac) {
 		for (int j = 0; j < map.getCells()[0].size(); j++) {
 			if (map.getCells()[focus.x][j].getPosition() != map.getCells()[focus.x][focus.y].getPosition() &&
@@ -30,6 +33,7 @@ public:
 		return true;
 	}
 
+    //this function check if the map is completed and display the message if it is.
     void mapCompleted(sf::RenderWindow& window) {
         for (int i = 0; i < map.getCells().size(); i++) {
             for (int j = 0; j < map.getCells()[i].size(); j++) {
@@ -54,35 +58,36 @@ public:
         Gamefinish= true;
     }
 
+
+    //Mouse manager
     void MouseClicked(sf::RenderWindow& window, sf::Event& event) {
         if (event.type == sf::Event::MouseButtonPressed) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
             for (int i = 0; i < map.getCells().size(); i++) {
                 for (int j = 0; j < map.getCells()[i].size(); j++) {
-                    // Vérifier si la souris est à l'intérieur du rectangle
+                    // Check if the mouse if is in a cell
                     if (map.getCells()[i][j].getRect().getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
-                        // Vérifier si le bouton gauche de la souris est cliqué
+                        // Check if the left button is clicked
                         if (event.mouseButton.button == sf::Mouse::Left) {
-                            map.getCells()[focus.x][focus.y].setBGColor(sf::Color::Blue);  // Réinitialiser la couleur
+                            map.getCells()[focus.x][focus.y].setBGColor(sf::Color::Blue);  // Update the old selected cell color
                             focus.x = i;
                             focus.y = j;
-                            map.getCells()[i][j].setBGColor(sf::Color::Magenta);  // Mettre en évidence la cellule sélectionnée
+                            map.getCells()[i][j].setBGColor(sf::Color::Magenta);  // To highlight the new selected cell
                         }
                         break;
                     }
-                    //else {
-                      //  map.getCells()[i][j].setBGColor(sf::Color::Blue);  // Réinitialiser la couleur
-                    //}
                 }
             }
         }
     }
 
+
+    //Keyboard manager
     void writeNumber(sf::Event& event) {
         if (event.type == sf::Event::KeyPressed) {
             sf::Keyboard::Key key = event.key.code;
             switch (key) {
-                // Pavé numérique
+            
             case sf::Keyboard::Numpad0:
             case sf::Keyboard::Num0: check_validity("0"); break;
             case sf::Keyboard::Numpad1:
@@ -105,6 +110,9 @@ public:
             case sf::Keyboard::Num9: check_validity("9"); break;
             case sf::Keyboard::Up:
                 if (focus.x > 0) {
+                    if ( !map.getCells()[focus.x - 1][focus.y].getType()) {
+                        return;
+                    }
                     map.getCells()[focus.x - 1][focus.y].setBGColor(sf::Color::Magenta);
                     map.getCells()[focus.x][focus.y].setBGColor(sf::Color::Blue);
                     focus.x = focus.x - 1;
@@ -113,6 +121,9 @@ public:
                 else { break; }
             case sf::Keyboard::Down:
                 if (focus.x < map.getCells().size()-1) {
+                    if (!map.getCells()[focus.x + 1][focus.y].getType()) {
+                        return;
+                    }
                     map.getCells()[focus.x + 1][focus.y].setBGColor(sf::Color::Magenta);
                     map.getCells()[focus.x][focus.y].setBGColor(sf::Color::Blue);
                     focus.x = focus.x + 1;
@@ -121,6 +132,9 @@ public:
                 else { break; }
             case sf::Keyboard::Left:
                 if (focus.y > 0) {
+                    if (!map.getCells()[focus.x][focus.y - 1].getType()) {
+                        return;
+                    }
                     map.getCells()[focus.x][focus.y - 1].setBGColor(sf::Color::Magenta);
                     map.getCells()[focus.x][focus.y].setBGColor(sf::Color::Blue);
                     focus.y = focus.y - 1;
@@ -129,6 +143,9 @@ public:
                 else { break; }
             case sf::Keyboard::Right:
                 if (focus.y < map.getCells()[focus.x].size()-1){
+                    if (!map.getCells()[focus.x][focus.y + 1].getType()) {
+                        return;
+                    }
                     map.getCells()[focus.x][focus.y + 1].setBGColor(sf::Color::Magenta);
                     map.getCells()[focus.x][focus.y].setBGColor(sf::Color::Blue);
                     focus.y = focus.y + 1;
@@ -140,7 +157,7 @@ public:
                 map.getCells()[focus.x][focus.y].setNumber("");
                 break;
 
-                // if the key il not valide
+                // if the key is not valide
             default:
                 std::cout << "Touche non valable" << std::endl;
                 break;
@@ -149,6 +166,8 @@ public:
     }
 
 
+    // the function to start the game
+    // Take a refence of the the window which will display the game as a parameter
     void play(sf::RenderWindow& window) {
         InitializeSudoKu(window);
 
@@ -159,15 +178,15 @@ public:
                     window.close();
                 }
                 if (Gamefinish == false) {
-                    // Appel de la fonction MouseClicked pour gérer les clics
+                    // Call the mouse manager
                     MouseClicked(window, event);
-                    // Appel de la fonction writeNumber pour gérer les touches du clavier
+                    // Call the Keyboard manager
                     writeNumber(event);
                     mapCompleted(window);
                 }
             }
 
-            // Dessiner et afficher la fenêtre
+            // Draw elements and display the window
             window.clear(sf::Color::White);
             map.draw(window);
             if (Gamefinish) {
@@ -176,7 +195,7 @@ public:
             window.display();
         }
     }
-
+    // Constructor
 	SudokuGame(std::string pwd,sf::Font& ft) :map(pwd,ft), focus(sf::Vector2<int>(0, 0)) {
         finish.setFont(ft);
 	}
